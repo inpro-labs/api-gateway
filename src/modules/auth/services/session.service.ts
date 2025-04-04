@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Err, Ok, Result } from '@sputnik-labs/api-sdk';
 import { firstValueFrom } from 'rxjs';
-import { SessionRequestDto } from '../dtos/session/session-request.dto';
+import { CreateSessionRequestDto } from '../dtos/session/create-session-request.dto';
 
 @Injectable()
 export class SessionService {
@@ -23,7 +23,7 @@ export class SessionService {
     }
   }
 
-  async createSession(payload: SessionRequestDto): Promise<unknown> {
+  async createSession(payload: CreateSessionRequestDto): Promise<unknown> {
     return (await this.apply('create_session', payload)).expect(
       'Failed to create session',
     );

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class SessionRequestDto {
+export class CreateSessionRequestDto {
   @ApiProperty({
     description: 'The device of the session',
     example: 'IOS',

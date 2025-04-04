@@ -2,8 +2,8 @@ import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
 import { SessionService } from '../services/session.service';
 import { ApiConsumes, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ApiBody } from '@nestjs/swagger';
-import { SessionRequestDto } from '../dtos/session/session-request.dto';
-import { SessionResponseDto } from '../dtos/session/session-response.dto';
+import { CreateSessionRequestDto } from '../dtos/session/create-session-request.dto';
+import { CreateSessionResponseDto } from '../dtos/session/create-session-response.dto';
 
 @Controller('sessions')
 export class SessionController {
@@ -11,10 +11,13 @@ export class SessionController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new session' })
-  @ApiBody({ type: SessionRequestDto, description: 'Session request' })
-  @ApiResponse({ type: SessionResponseDto, description: 'Session response' })
+  @ApiBody({ type: CreateSessionRequestDto, description: 'Session request' })
+  @ApiResponse({
+    type: CreateSessionResponseDto,
+    description: 'Session response',
+  })
   @ApiConsumes('application/json')
-  async createSession(@Body() body: SessionRequestDto) {
+  async createSession(@Body() body: CreateSessionRequestDto) {
     return this.sessionService.createSession(body);
   }
 
