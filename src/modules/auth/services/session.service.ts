@@ -1,6 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Err, Ok, Result } from '@sputnik-labs/api-sdk';
+import {
+  ApplicationException,
+  Err,
+  MicroserviceRequest,
+  Ok,
+  Result,
+} from '@inpro-labs/api-sdk';
 import { firstValueFrom } from 'rxjs';
 import { CreateSessionRequestDto } from '../dtos/session/create-session-request.dto';
 
@@ -8,9 +14,9 @@ import { CreateSessionRequestDto } from '../dtos/session/create-session-request.
 export class SessionService {
   constructor(@Inject('AUTH_SERVICE') private readonly client: ClientProxy) {}
 
-  async apply(
+  async apply<T>(
     command: string,
-    payload: Record<string, any>,
+    payload: MicroserviceRequest<T>,
   ): Promise<Result<unknown>> {
     try {
       const source$ = this.client.send<unknown>(command, payload);
@@ -19,19 +25,42 @@ export class SessionService {
 
       return Ok(session);
     } catch (error) {
-      return Err(error);
+      const err = error as {
+        message: string;
+        statusCode: number;
+        code: string;
+      };
+
+      return Err(
+        new ApplicationException(err.message, err.statusCode, err.code),
+      );
     }
   }
 
   async createSession(payload: CreateSessionRequestDto): Promise<unknown> {
-    return (await this.apply('create_session', payload)).expect(
-      'Failed to create session',
-    );
+    return (
+      await this.apply<CreateSessionRequestDto>('create_session', {
+        data: payload,
+        metadata: {},
+      })
+    ).unwrap();
   }
 
-  async revokeSession(id: string): Promise<unknown> {
-    return (await this.apply('revoke_session', { id })).expect(
-      'Failed to revoke session',
-    );
+  async revokeSession(sessionId: string): Promise<unknown> {
+    return (
+      await this.apply<{ sessionId: string }>('revoke_session', {
+        data: { sessionId },
+        metadata: {},
+      })
+    ).unwrap();
+  }
+
+  async listUserSessions(userId: string): Promise<unknown> {
+    return (
+      await this.apply<{ userId: string }>('list_user_sessions', {
+        data: { userId },
+        metadata: {},
+      })
+    ).unwrap();
   }
 }

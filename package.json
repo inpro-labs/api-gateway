@@ -20,13 +20,13 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@inpro-labs/api-sdk": "^1.0.4",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/cqrs": "^11.0.3",
     "@nestjs/microservices": "^11.0.13",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.1.0",
-    "@sputnik-labs/api-sdk": "^2.0.0-pre.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },

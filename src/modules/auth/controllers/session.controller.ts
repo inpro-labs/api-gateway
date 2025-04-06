@@ -1,6 +1,11 @@
-import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { SessionService } from '../services/session.service';
-import { ApiConsumes, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { ApiBody } from '@nestjs/swagger';
 import { CreateSessionRequestDto } from '../dtos/session/create-session-request.dto';
 import { CreateSessionResponseDto } from '../dtos/session/create-session-response.dto';
@@ -21,10 +26,19 @@ export class SessionController {
     return this.sessionService.createSession(body);
   }
 
-  @Patch(':id')
+  @Patch(':id/revoke')
   @ApiOperation({ summary: 'Revoke a session' })
   @ApiConsumes('application/json')
+  @ApiParam({ name: 'id', type: String, description: 'Session ID' })
   async revokeSession(@Param('id') id: string) {
     return this.sessionService.revokeSession(id);
+  }
+
+  @Get('user/:id')
+  @ApiOperation({ summary: 'List sessions for a user' })
+  @ApiConsumes('application/json')
+  @ApiParam({ name: 'id', type: String, description: 'User ID' })
+  async listUserSessions(@Param('id') id: string) {
+    return this.sessionService.listUserSessions(id);
   }
 }
