@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
 import { SessionService } from '../services/session.service';
 import {
   ApiConsumes,
@@ -32,13 +32,5 @@ export class SessionController {
   @ApiParam({ name: 'id', type: String, description: 'Session ID' })
   async revokeSession(@Param('id') id: string) {
     return this.sessionService.revokeSession(id);
-  }
-
-  @Get('user/:id')
-  @ApiOperation({ summary: 'List sessions for a user' })
-  @ApiConsumes('application/json')
-  @ApiParam({ name: 'id', type: String, description: 'User ID' })
-  async listUserSessions(@Param('id') id: string) {
-    return this.sessionService.listUserSessions(id);
   }
 }

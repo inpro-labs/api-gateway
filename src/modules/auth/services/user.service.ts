@@ -8,10 +8,10 @@ import {
   Result,
 } from '@inpro-labs/api-sdk';
 import { firstValueFrom, timeout, TimeoutError } from 'rxjs';
-import { CreateSessionRequestDto } from '../dtos/session/create-session-request.dto';
+import { CreateUserRequestDto } from '../dtos/user/create-user-request.dto';
 
 @Injectable()
-export class SessionService {
+export class UserService {
   constructor(@Inject('AUTH_SERVICE') private readonly client: ClientProxy) {}
 
   async apply<T>(
@@ -45,37 +45,12 @@ export class SessionService {
     }
   }
 
-  async createSession(payload: CreateSessionRequestDto): Promise<unknown> {
+  async createUser(payload: CreateUserRequestDto): Promise<unknown> {
     return (
-      await this.apply<CreateSessionRequestDto>('create_session', {
+      await this.apply<CreateUserRequestDto>('create_user', {
         data: payload,
         metadata: {},
       })
-    ).unwrap();
-  }
-
-  async revokeSession(sessionId: string): Promise<unknown> {
-    return (
-      await this.apply<{ sessionId: string }>('revoke_session', {
-        data: { sessionId },
-        metadata: {},
-      })
-    ).unwrap();
-  }
-
-  async listUserSessions(
-    userId: string,
-    take: number,
-    skip: number,
-  ): Promise<unknown> {
-    return (
-      await this.apply<{ userId: string; take: number; skip: number }>(
-        'list_user_sessions',
-        {
-          data: { userId, take, skip },
-          metadata: {},
-        },
-      )
     ).unwrap();
   }
 }
