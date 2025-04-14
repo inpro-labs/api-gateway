@@ -11,6 +11,8 @@ export class GatewayExceptionFilter
     const response = ctx.getResponse<Response>();
     const status = exception.statusCode || 500;
 
+    console.log(exception);
+
     response.status(status).json({
       message: exception.message || 'Internal server error',
       statusCode: status,

@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import {
   ApiConsumes,
   ApiOperation,
@@ -50,6 +59,11 @@ export class UserController {
     @Query('take') take: number,
     @Query('skip') skip: number,
   ) {
-    return this.sessionService.listUserSessions(id, take, skip);
+    try {
+      return this.sessionService.listUserSessions(id, take, skip);
+    } catch (error) {
+      console.error(error);
+      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

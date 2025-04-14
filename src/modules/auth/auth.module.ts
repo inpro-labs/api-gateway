@@ -5,6 +5,10 @@ import { Transport } from '@nestjs/microservices';
 import { ClientsModule } from '@nestjs/microservices';
 import { UserController } from './controllers/user.controller';
 import { UserService } from './services/user.service';
+import {
+  AUTH_CLIENT_SERVICE,
+  AuthClientProvider,
+} from './providers/auth.provider';
 
 @Module({
   imports: [
@@ -23,6 +27,7 @@ import { UserService } from './services/user.service';
     ]),
   ],
   controllers: [SessionController, UserController],
-  providers: [SessionService, UserService],
+  providers: [SessionService, UserService, AuthClientProvider],
+  exports: [AUTH_CLIENT_SERVICE],
 })
 export class AuthModule {}
