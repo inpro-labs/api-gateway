@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@inpro-labs/api-sdk": "^1.0.4",
+    "@inpro-labs/core": "^1.0.1",
+    "@inpro-labs/microservices": "^1.0.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/cqrs": "^11.0.3",

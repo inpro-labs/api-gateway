@@ -7,7 +7,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Response as ExpressResponse } from 'express';
-import { MicroserviceResponse } from '@inpro-labs/api-sdk';
+import { MicroserviceResponse } from '@inpro-labs/microservices';
 
 @Injectable()
 export class HttpStatusCodeInterceptor

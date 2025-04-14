@@ -1,5 +1,5 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
-import { ApplicationException } from '@inpro-labs/api-sdk';
+import { ApplicationException } from '@inpro-labs/microservices';
 import { Response } from 'express';
 
 @Catch(ApplicationException)

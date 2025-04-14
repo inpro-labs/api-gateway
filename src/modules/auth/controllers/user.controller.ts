@@ -32,7 +32,7 @@ export class UserController {
   }
 
   @Get(':id/sessions')
-  @ApiOperation({ summary: 'Get a user by ID' })
+  @ApiOperation({ summary: 'Get a user sessions by ID' })
   @ApiConsumes('application/json')
   @ApiParam({ name: 'id', type: String, description: 'User ID' })
   @ApiQuery({
@@ -40,7 +40,12 @@ export class UserController {
     type: Number,
     description: 'Number of sessions to take',
   })
-  async getUser(
+  @ApiQuery({
+    name: 'skip',
+    type: Number,
+    description: 'Number of sessions to skip',
+  })
+  async getUserSessions(
     @Param('id') id: string,
     @Query('take') take: number,
     @Query('skip') skip: number,

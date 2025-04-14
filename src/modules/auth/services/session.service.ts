@@ -1,62 +1,31 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import {
-  ApplicationException,
-  Err,
-  MicroserviceRequest,
-  Ok,
-  Result,
-} from '@inpro-labs/api-sdk';
-import { firstValueFrom, timeout, TimeoutError } from 'rxjs';
 import { CreateSessionRequestDto } from '../dtos/session/create-session-request.dto';
+import { ClientService, QueryParams } from '@inpro-labs/microservices';
 
 @Injectable()
 export class SessionService {
-  constructor(@Inject('AUTH_SERVICE') private readonly client: ClientProxy) {}
+  private readonly clientService: ClientService;
 
-  async apply<T>(
-    command: string,
-    payload: MicroserviceRequest<T>,
-  ): Promise<Result<unknown>> {
-    try {
-      const source$ = this.client
-        .send<unknown>(command, payload)
-        .pipe(timeout(30000));
-
-      const session = await firstValueFrom<unknown>(source$);
-
-      return Ok(session);
-    } catch (error) {
-      const err = error as {
-        message: string;
-        statusCode: number;
-        code: string;
-      };
-
-      if (error instanceof TimeoutError) {
-        return Err(
-          new ApplicationException('Request timed out', 504, 'TIMEOUT'),
-        );
-      }
-
-      return Err(
-        new ApplicationException(err.message, err.statusCode, err.code),
-      );
-    }
+  constructor(@Inject('AUTH_SERVICE') private readonly client: ClientProxy) {
+    this.clientService = new ClientService(this.client);
   }
 
   async createSession(payload: CreateSessionRequestDto): Promise<unknown> {
     return (
-      await this.apply<CreateSessionRequestDto>('create_session', {
-        data: payload,
-        metadata: {},
-      })
+      await this.clientService.apply<CreateSessionRequestDto>(
+        'create_session',
+        {
+          data: payload,
+          metadata: {},
+        },
+      )
     ).unwrap();
   }
 
   async revokeSession(sessionId: string): Promise<unknown> {
     return (
-      await this.apply<{ sessionId: string }>('revoke_session', {
+      await this.clientService.apply<{ sessionId: string }>('revoke_session', {
         data: { sessionId },
         metadata: {},
       })
@@ -69,10 +38,10 @@ export class SessionService {
     skip: number,
   ): Promise<unknown> {
     return (
-      await this.apply<{ userId: string; take: number; skip: number }>(
+      await this.clientService.apply<QueryParams<{ userId: string }, true>>(
         'list_user_sessions',
         {
-          data: { userId, take, skip },
+          data: { data: { userId }, pagination: { take, skip } },
           metadata: {},
         },
       )
