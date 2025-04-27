@@ -9,12 +9,14 @@ import {
   AUTH_CLIENT_SERVICE,
   AuthClientProvider,
 } from './providers/auth.provider';
+import { AuthController } from './controllers/auth.controller';
+import { AuthService } from './services/auth.service';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'AUTH_SERVICE',
+        name: 'MICROSERVICE_AUTH',
         transport: Transport.RMQ,
         options: {
           urls: ['amqp://localhost:5672'],
@@ -26,8 +28,8 @@ import {
       },
     ]),
   ],
-  controllers: [SessionController, UserController],
-  providers: [SessionService, UserService, AuthClientProvider],
+  controllers: [SessionController, UserController, AuthController],
+  providers: [SessionService, UserService, AuthService, AuthClientProvider],
   exports: [AUTH_CLIENT_SERVICE],
 })
 export class AuthModule {}

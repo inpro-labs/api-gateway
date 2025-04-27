@@ -1,20 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateUserRequestDto } from '../dtos/user/create-user-request.dto';
 import { ClientService, MicroserviceRequest } from '@inpro-labs/microservices';
 import { AUTH_CLIENT_SERVICE } from '../providers/auth.provider';
+import { SignInRequestDto } from '../dtos/auth/sign-in-request.dto';
 
 @Injectable()
-export class UserService {
+export class AuthService {
   constructor(
     @Inject(AUTH_CLIENT_SERVICE) private readonly authClient: ClientService,
   ) {}
 
-  async createUser(
-    payload: CreateUserRequestDto,
+  async signIn(
+    payload: SignInRequestDto,
     metadata: MicroserviceRequest['metadata'],
   ): Promise<unknown> {
     return (
-      await this.authClient.apply<CreateUserRequestDto>('create_user', {
+      await this.authClient.apply<SignInRequestDto>('sign_in', {
         data: payload,
         metadata,
       })

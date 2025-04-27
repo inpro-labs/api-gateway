@@ -2,8 +2,7 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
+  Headers,
   Param,
   Post,
   Query,
@@ -36,8 +35,14 @@ export class UserController {
     description: 'User response',
   })
   @ApiConsumes('application/json')
-  async createUser(@Body() body: CreateUserRequestDto) {
-    return this.userService.createUser(body);
+  async createUser(
+    @Body() body: CreateUserRequestDto,
+    @Headers() headers: Record<string, string>,
+  ) {
+    return this.userService.createUser(body, {
+      correlationId: headers.correlationId,
+      requestId: headers.requestId,
+    });
   }
 
   @Get(':id/sessions')
@@ -59,11 +64,6 @@ export class UserController {
     @Query('take') take: number,
     @Query('skip') skip: number,
   ) {
-    try {
-      return this.sessionService.listUserSessions(id, take, skip);
-    } catch (error) {
-      console.error(error);
-      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return this.sessionService.listUserSessions(id, take, skip);
   }
 }
