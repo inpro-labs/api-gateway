@@ -1,9 +1,11 @@
-import { Body, Controller, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiConsumes, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ApiBody } from '@nestjs/swagger';
 import { SignInRequestDto } from '../dtos/auth/sign-in-request.dto';
 import { SignInResponseDto } from '../dtos/auth/sign-in-response.dto';
 import { AuthService } from '../services/auth.service';
+import { RefreshTokenRequestDto } from '../dtos/auth/refresh-token-request.dto';
+import { RefreshTokenResponseDto } from '../dtos/auth/refresh-token-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -17,13 +19,22 @@ export class AuthController {
     description: 'Sign in response',
   })
   @ApiConsumes('application/json')
-  async signIn(
-    @Body() body: SignInRequestDto,
-    @Headers() headers: Record<string, string>,
-  ) {
-    return this.authService.signIn(body, {
-      correlationId: headers.correlationId,
-      requestId: headers.requestId,
-    });
+  async signIn(@Body() body: SignInRequestDto) {
+    return this.authService.signIn(body);
+  }
+
+  @Post('/refresh-token')
+  @ApiOperation({ summary: 'Refresh token' })
+  @ApiBody({
+    type: RefreshTokenRequestDto,
+    description: 'Refresh token request',
+  })
+  @ApiResponse({
+    type: RefreshTokenResponseDto,
+    description: 'Refresh token response',
+  })
+  @ApiConsumes('application/json')
+  async refreshToken(@Body() body: RefreshTokenRequestDto) {
+    return this.authService.refreshToken(body);
   }
 }

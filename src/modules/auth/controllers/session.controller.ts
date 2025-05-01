@@ -1,36 +1,24 @@
-import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
+import { Controller, Param, Patch } from '@nestjs/common';
 import { SessionService } from '../services/session.service';
-import {
-  ApiConsumes,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-} from '@nestjs/swagger';
-import { ApiBody } from '@nestjs/swagger';
-import { CreateSessionRequestDto } from '../dtos/session/create-session-request.dto';
-import { CreateSessionResponseDto } from '../dtos/session/create-session-response.dto';
+import { ApiConsumes, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
 
 @Controller('sessions')
 export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Create a new session' })
-  @ApiBody({ type: CreateSessionRequestDto, description: 'Session request' })
-  @ApiResponse({
-    type: CreateSessionResponseDto,
-    description: 'Session response',
-  })
-  @ApiConsumes('application/json')
-  async createSession(@Body() body: CreateSessionRequestDto) {
-    return this.sessionService.createSession(body);
-  }
-
   @Patch(':id/revoke')
   @ApiOperation({ summary: 'Revoke a session' })
   @ApiConsumes('application/json')
   @ApiParam({ name: 'id', type: String, description: 'Session ID' })
-  async revokeSession(@Param('id') id: string) {
-    return this.sessionService.revokeSession(id);
+  @ApiQuery({
+    name: 'userId',
+    type: String,
+    description: 'User ID',
+  })
+  async revokeSession(
+    @Param('id') id: string,
+    @Query('userId') userId: string,
+  ) {
+    return this.sessionService.revokeSession(id, userId);
   }
 }
