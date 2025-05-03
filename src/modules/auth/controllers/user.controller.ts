@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Headers,
-  Param,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import {
   ApiConsumes,
   ApiOperation,
@@ -18,14 +10,10 @@ import { ApiBody } from '@nestjs/swagger';
 import { CreateUserRequestDto } from '../dtos/user/create-user-request.dto';
 import { CreateUserResponseDto } from '../dtos/user/create-user-response.dto';
 import { UserService } from '../services/user.service';
-import { SessionService } from '../services/session.service';
 
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly sessionService: SessionService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
@@ -35,18 +23,12 @@ export class UserController {
     description: 'User response',
   })
   @ApiConsumes('application/json')
-  async createUser(
-    @Body() body: CreateUserRequestDto,
-    @Headers() headers: Record<string, string>,
-  ) {
-    return this.userService.createUser(body, {
-      correlationId: headers.correlationId,
-      requestId: headers.requestId,
-    });
+  async createUser(@Body() body: CreateUserRequestDto) {
+    return this.userService.createUser(body);
   }
 
   @Get(':id/sessions')
-  @ApiOperation({ summary: 'Get a user sessions by ID' })
+  @ApiOperation({ summary: 'Get user sessions by ID' })
   @ApiConsumes('application/json')
   @ApiParam({ name: 'id', type: String, description: 'User ID' })
   @ApiQuery({
@@ -64,6 +46,10 @@ export class UserController {
     @Query('take') take: number,
     @Query('skip') skip: number,
   ) {
-    return this.sessionService.listUserSessions(id, take, skip);
+    return this.userService.listUserSessions({
+      userId: id,
+      take,
+      skip,
+    });
   }
 }

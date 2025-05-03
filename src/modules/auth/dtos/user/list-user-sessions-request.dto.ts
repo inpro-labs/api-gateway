@@ -1,6 +1,7 @@
+import { Pagination } from '@inpro-labs/microservices';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ListUserSessionsRequestDto {
+export class ListUserSessionsRequestDto implements Pagination {
   @ApiProperty({
     description: 'The user id',
     example: '1234567890',

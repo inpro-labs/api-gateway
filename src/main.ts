@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { GatewayExceptionFilter } from './shared/filters/gateway-exception.filter';
-import { HttpStatusCodeInterceptor } from './shared/interceptors/http-status-code.interceptor';
+import { GatewayExceptionFilter } from './shared/infra/filters/gateway-exception.filter';
+import { HttpStatusCodeInterceptor } from './shared/infra/interceptors/http-status-code.interceptor';
 import { ExpressAdapter } from '@nestjs/platform-express';
-
+import { writeFileSync } from 'node:fs';
+import path from 'node:path';
 async function bootstrap() {
   const adapter = new ExpressAdapter();
   const app = await NestFactory.create(AppModule, adapter);
@@ -17,6 +18,12 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
+
+  writeFileSync(
+    path.join(__dirname, '..', 'docs', 'api.json'),
+    JSON.stringify(document, null, 2),
+  );
+
   SwaggerModule.setup('api', app, document);
 
   app.useGlobalFilters(new GatewayExceptionFilter());

@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ClientService, QueryParams } from '@inpro-labs/microservices';
+import { ClientService } from '@inpro-labs/microservices';
 import { AUTH_CLIENT_SERVICE } from '../providers/auth.provider';
 import { REQUEST } from '@nestjs/core';
 import { injectHeaders } from 'src/shared/utils/inject-headers';
@@ -22,25 +22,6 @@ export class SessionService {
         data: { sessionId },
         metadata: injectHeaders(this.request.headers),
       })
-    ).unwrap();
-  }
-
-  async listUserSessions(
-    userId: string,
-    take: number,
-    skip: number,
-  ): Promise<unknown> {
-    this.logger.log(
-      `sending event: [list_user_sessions] [userId: ${userId}] [take: ${take}] [skip: ${skip}]`,
-    );
-    return (
-      await this.authClient.apply<QueryParams<{ userId: string }, true>>(
-        'list_user_sessions',
-        {
-          data: { data: { userId }, pagination: { take, skip } },
-          metadata: injectHeaders(this.request.headers),
-        },
-      )
     ).unwrap();
   }
 }

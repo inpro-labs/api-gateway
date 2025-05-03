@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Post } from '@nestjs/common';
 import { ApiConsumes, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ApiBody } from '@nestjs/swagger';
 import { SignInRequestDto } from '../dtos/auth/sign-in-request.dto';
@@ -6,6 +6,7 @@ import { SignInResponseDto } from '../dtos/auth/sign-in-response.dto';
 import { AuthService } from '../services/auth.service';
 import { RefreshTokenRequestDto } from '../dtos/auth/refresh-token-request.dto';
 import { RefreshTokenResponseDto } from '../dtos/auth/refresh-token-response.dto';
+import { SignOutResponseDto } from '../dtos/auth/sign-out-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -21,6 +22,17 @@ export class AuthController {
   @ApiConsumes('application/json')
   async signIn(@Body() body: SignInRequestDto) {
     return this.authService.signIn(body);
+  }
+
+  @Delete('sign-out')
+  @ApiOperation({ summary: 'Sign out a user' })
+  @ApiConsumes('application/json')
+  @ApiResponse({
+    type: SignOutResponseDto,
+    description: 'Sign out response',
+  })
+  async signOut() {
+    return this.authService.signOut();
   }
 
   @Post('/refresh-token')
