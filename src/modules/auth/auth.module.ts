@@ -30,6 +30,6 @@ import { AuthService } from './services/auth.service';
   ],
   controllers: [SessionController, UserController, AuthController],
   providers: [SessionService, UserService, AuthService, AuthClientProvider],
-  exports: [AUTH_CLIENT_SERVICE],
+  exports: [AUTH_CLIENT_SERVICE, AuthService],
 })
 export class AuthModule {}

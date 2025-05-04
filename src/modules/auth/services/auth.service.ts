@@ -3,10 +3,10 @@ import { ClientService } from '@inpro-labs/microservices';
 import { AUTH_CLIENT_SERVICE } from '../providers/auth.provider';
 import { SignInRequestDto } from '../dtos/auth/sign-in-request.dto';
 import { REQUEST } from '@nestjs/core';
-import { injectHeaders } from 'src/shared/utils/inject-headers';
+import { injectHeaders } from '@/shared/utils/inject-headers';
 import { RefreshTokenRequestDto } from '../dtos/auth/refresh-token-request.dto';
 import { SignOutRequestDto } from '../dtos/auth/sign-out-request.dto';
-import { ValidateSessionRequestDto } from '../dtos/auth/validate-session-request.dto';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +32,7 @@ export class AuthService {
     return (
       await this.authClient.apply<SignOutRequestDto>('sign_out', {
         data: {
-          accessToken: this.request.headers.get('authorization')!,
+          accessToken: this.request.headers.authorization as string,
         },
         metadata: injectHeaders(this.request.headers),
       })
@@ -48,19 +48,6 @@ export class AuthService {
         data: payload,
         metadata: injectHeaders(this.request.headers),
       })
-    ).unwrap();
-  }
-
-  async validateSession(payload: ValidateSessionRequestDto): Promise<unknown> {
-    this.logger.log(`sending event: [validate_session]`);
-    return (
-      await this.authClient.apply<ValidateSessionRequestDto>(
-        'validate_session',
-        {
-          data: payload,
-          metadata: injectHeaders(this.request.headers),
-        },
-      )
     ).unwrap();
   }
 }

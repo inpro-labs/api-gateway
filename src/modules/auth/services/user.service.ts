@@ -2,10 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserRequestDto } from '../dtos/user/create-user-request.dto';
 import { ClientService, QueryParams } from '@inpro-labs/microservices';
 import { AUTH_CLIENT_SERVICE } from '../providers/auth.provider';
-import { injectHeaders } from 'src/shared/utils/inject-headers';
+import { injectHeaders } from '@/shared/utils/inject-headers';
 import { ListUserSessionsRequestDto } from '../dtos/user/list-user-sessions-request.dto';
 import { REQUEST } from '@nestjs/core';
 import { Logger } from '@nestjs/common';
+import { Request } from 'express';
+
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);

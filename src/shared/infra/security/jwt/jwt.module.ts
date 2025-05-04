@@ -4,16 +4,22 @@ import { JwtModule as NestJwtModule } from '@nestjs/jwt';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { AuthService } from 'src/modules/auth/services/auth.service';
+import { AuthModule } from '@/modules/auth/auth.module';
+import { EnvModule } from '@/config/env/env.module';
+import { EnvService } from '@/config/env/env.service';
 
 @Module({
   imports: [
-    PassportModule,
-    NestJwtModule.register({
-      global: true,
-      secret: process.env.JWT_SECRET,
+    EnvModule,
+    PassportModule.register({ defaultStrategy: 'jwt', session: false }),
+    NestJwtModule.registerAsync({
+      imports: [EnvModule],
+      useFactory: (env: EnvService) => ({
+        secret: env.get('JWT_SECRET'),
+      }),
+      inject: [EnvService],
     }),
-    AuthService,
+    AuthModule,
   ],
   providers: [
     JwtStrategy,
@@ -22,5 +28,6 @@ import { AuthService } from 'src/modules/auth/services/auth.service';
       useClass: JwtAuthGuard,
     },
   ],
+  exports: [PassportModule, NestJwtModule],
 })
 export class JwtModule {}

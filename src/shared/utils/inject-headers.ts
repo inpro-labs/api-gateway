@@ -1,10 +1,12 @@
-export const injectHeaders = (headers: Headers) => {
+import { IncomingHttpHeaders } from 'http';
+
+export const injectHeaders = (headers: IncomingHttpHeaders) => {
   return {
-    correlationId: headers.get('correlationId') ?? undefined,
-    requestId: headers.get('requestId') ?? undefined,
-    authorization: headers.get('authorization') ?? undefined,
-    userAgent: headers.get('user-agent') ?? undefined,
-    ip: headers.get('x-forwarded-for') ?? undefined,
-    traceId: headers.get('traceId') ?? undefined,
+    correlationId: headers.correlationId as string | undefined,
+    requestId: headers.requestId as string | undefined,
+    authorization: headers.authorization,
+    userAgent: headers['user-agent'],
+    ip: headers['x-forwarded-for'] as string | undefined,
+    traceId: headers.traceId as string | undefined,
   };
 };

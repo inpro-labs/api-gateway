@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { GatewayExceptionFilter } from './shared/infra/filters/gateway-exception.filter';
-import { HttpStatusCodeInterceptor } from './shared/infra/interceptors/http-status-code.interceptor';
+import { GatewayExceptionFilter } from './shared/infra/nest/filters/gateway-exception.filter';
+import { HttpStatusCodeInterceptor } from './shared/infra/nest/interceptors/http-status-code.interceptor';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { writeFileSync } from 'node:fs';
-import path from 'node:path';
+import { writeFileSync } from 'fs';
+import { join } from 'path';
+
 async function bootstrap() {
   const adapter = new ExpressAdapter();
   const app = await NestFactory.create(AppModule, adapter);
@@ -15,12 +16,18 @@ async function bootstrap() {
     .setDescription('Here is the API documentation for InPro')
     .setVersion('1.0')
     .addTag('Auth Service')
+    .addServer('http://localhost:3000')
+    .addSecurity('jwt', {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
 
   writeFileSync(
-    path.join(__dirname, '..', 'docs', 'api.json'),
+    join(__dirname, '..', 'docs', 'api.json'),
     JSON.stringify(document, null, 2),
   );
 

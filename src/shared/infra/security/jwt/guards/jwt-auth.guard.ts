@@ -1,23 +1,13 @@
-import {
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ExecutionContext, Inject, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
-import { AuthService } from 'src/modules/auth/services/auth.service';
-import { map, mergeMap, of, takeWhile, tap } from 'rxjs';
-import { ValidateSessionResponseDto } from 'src/modules/auth/dtos/auth/validate-session-response.dto';
-import { Request } from 'express';
 import { Observable } from 'rxjs';
+import { ApplicationException } from '@inpro-labs/microservices';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(
-    private reflector: Reflector,
-    private authService: AuthService,
-  ) {
+  constructor(@Inject(Reflector) private reflector: Reflector) {
     super();
   }
 
@@ -33,43 +23,23 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       return true;
     }
 
-    const canActivate = super.canActivate(context);
+    return super.canActivate(context);
+  }
 
-    if (typeof canActivate === 'boolean') {
-      return canActivate;
+  handleRequest(err: Error, user: any, info: { message?: string }) {
+    if (err) {
+      throw err;
     }
 
-    return of(canActivate).pipe(
-      mergeMap((value) => value),
-      takeWhile((value) => value),
-      map(() => context.switchToHttp().getRequest<Request>()),
-      mergeMap((request) =>
-        of(request).pipe(
-          map((req) => req.headers.authorization),
-          mergeMap((token) => {
-            if (!token) {
-              throw new UnauthorizedException();
-            }
+    if (!user) {
+      throw new ApplicationException(
+        info?.message || 'Token não informado',
+        401,
+        'INVALID_TOKEN',
+      );
+    }
 
-            return this.authService.validateSession({ accessToken: token });
-          }),
-          tap(
-            ({
-              isValid,
-              userId,
-              sessionId,
-              expiresAt,
-            }: ValidateSessionResponseDto) => {
-              if (!isValid) {
-                throw new UnauthorizedException();
-              }
-
-              request.user = { userId, sessionId, expiresAt };
-            },
-          ),
-          map(() => true),
-        ),
-      ),
-    );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return user;
   }
 }
