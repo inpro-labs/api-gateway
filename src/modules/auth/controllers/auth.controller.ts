@@ -7,11 +7,13 @@ import { AuthService } from '../services/auth.service';
 import { RefreshTokenRequestDto } from '../dtos/auth/refresh-token-request.dto';
 import { RefreshTokenResponseDto } from '../dtos/auth/refresh-token-response.dto';
 import { SignOutResponseDto } from '../dtos/auth/sign-out-response.dto';
+import { Public } from '@/shared/infra/security/jwt/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('sign-in')
   @ApiOperation({ summary: 'Sign in a user' })
   @ApiBody({ type: SignInRequestDto, description: 'Sign in request' })
@@ -35,6 +37,7 @@ export class AuthController {
     return this.authService.signOut();
   }
 
+  @Public()
   @Post('/refresh-token')
   @ApiOperation({ summary: 'Refresh token' })
   @ApiBody({
@@ -47,6 +50,7 @@ export class AuthController {
   })
   @ApiConsumes('application/json')
   async refreshToken(@Body() body: RefreshTokenRequestDto) {
+    console.log(body);
     return this.authService.refreshToken(body);
   }
 }

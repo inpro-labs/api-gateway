@@ -12,17 +12,12 @@ import { ValidateSessionRequestDto } from '@/modules/auth/dtos/auth/validate-ses
 import { injectHeaders } from '@/shared/utils/inject-headers';
 import { ValidateSessionResponseDto } from '@/modules/auth/dtos/auth/validate-session-response.dto';
 import { AUTH_CLIENT_SERVICE } from '@/modules/auth/providers/auth.provider';
-
-interface UserFromJwt {
-  sub: string;
-  sid: string;
-  email: string;
-}
+import { User } from '@/shared/types/principal';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private envService: EnvService,
+    envService: EnvService,
     @Inject(AUTH_CLIENT_SERVICE) private authClient: ClientService,
   ) {
     super({
@@ -36,15 +31,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(
     request: Request,
     payload: Record<string, string>,
-  ): Promise<UserFromJwt> {
+  ): Promise<User> {
     const token = request.headers.authorization!;
+    const [, tokenValue] = token.split(' ');
 
     const validSessionResult =
       await this.authClient.apply<ValidateSessionRequestDto>(
         'validate_session',
         {
           data: {
-            accessToken: token,
+            accessToken: tokenValue,
           },
           metadata: injectHeaders(request.headers),
         },
@@ -67,6 +63,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new ApplicationException('Invalid session', 401, 'INVALID_SESSION');
     }
 
-    return { email: payload.email, sub: payload.sub, sid: payload.sid };
+    return {
+      email: payload.email,
+      userId: payload.sub,
+      sessionId: payload.sid,
+      deviceId: payload.deviceId,
+    };
   }
 }

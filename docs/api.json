@@ -75,19 +75,10 @@
         ]
       }
     },
-    "/users/{id}/sessions": {
+    "/users/me/sessions": {
       "get": {
         "operationId": "UserController_getUserSessions",
         "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "User ID",
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "take",
             "required": true,

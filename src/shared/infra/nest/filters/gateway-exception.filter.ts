@@ -8,6 +8,7 @@ export class GatewayExceptionFilter
 {
   catch(exception: ApplicationException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
+    const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
     const status = exception.statusCode || 500;
 
@@ -16,6 +17,7 @@ export class GatewayExceptionFilter
       statusCode: status,
       code: exception.code || 'INTERNAL_SERVER_ERROR',
       success: false,
+      path: request.url,
     });
   }
 }
