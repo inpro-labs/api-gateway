@@ -235,9 +235,7 @@
         "scheme": "bearer",
         "bearerFormat": "JWT",
         "type": "http",
-        "name": "Authorization",
-        "description": "Enter JWT token",
-        "in": "header"
+        "description": "Enter JWT token"
       }
     },
     "schemas": {
