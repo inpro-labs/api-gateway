@@ -33,9 +33,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     if (!user) {
       throw new ApplicationException(
-        info?.message || 'Token não informado',
+        info?.message || 'Token not provided',
         401,
-        'INVALID_TOKEN',
+        'TOKEN_NOT_PROVIDED',
       );
     }
 

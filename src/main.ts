@@ -13,14 +13,25 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('InPro API')
+    .setVersion('0.1')
+    .setContact(
+      'Maxwell Macedo',
+      'https://github.com/MaxwellOlliver',
+      'maxwell.macedo@moondev.com.br',
+    )
     .setDescription('Here is the API documentation for InPro')
-    .setVersion('1.0')
     .addServer('http://localhost:3000')
-    .addSecurity('jwt', {
-      type: 'http',
-      scheme: 'bearer',
-      bearerFormat: 'JWT',
-    })
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'jwt',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

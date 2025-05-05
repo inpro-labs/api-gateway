@@ -1,6 +1,7 @@
 import { Controller, Param, Patch } from '@nestjs/common';
 import { SessionService } from '../services/session.service';
 import {
+  ApiBearerAuth,
   ApiConsumes,
   ApiOperation,
   ApiParam,
@@ -14,6 +15,7 @@ export class SessionController {
   constructor(private readonly sessionService: SessionService) {}
 
   @Patch(':id/revoke')
+  @ApiBearerAuth('jwt')
   @ApiOperation({ summary: 'Revoke a session' })
   @ApiConsumes('application/json')
   @ApiParam({ name: 'id', type: String, description: 'Session ID' })

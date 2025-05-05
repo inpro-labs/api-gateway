@@ -36,6 +36,11 @@
             }
           }
         },
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "summary": "Revoke a session",
         "tags": [
           "Session"
@@ -103,6 +108,11 @@
             "description": ""
           }
         },
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "summary": "Get user sessions by ID",
         "tags": [
           "User"
@@ -158,6 +168,11 @@
             }
           }
         },
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "summary": "Sign out a user",
         "tags": [
           "Auth"
@@ -201,8 +216,12 @@
   "info": {
     "title": "InPro API",
     "description": "Here is the API documentation for InPro",
-    "version": "1.0",
-    "contact": {}
+    "version": "0.1",
+    "contact": {
+      "name": "Maxwell Macedo",
+      "url": "https://github.com/MaxwellOlliver",
+      "email": "maxwell.macedo@moondev.com.br"
+    }
   },
   "tags": [],
   "servers": [
@@ -213,9 +232,12 @@
   "components": {
     "securitySchemes": {
       "jwt": {
-        "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "bearerFormat": "JWT",
+        "type": "http",
+        "name": "Authorization",
+        "description": "Enter JWT token",
+        "in": "header"
       }
     },
     "schemas": {

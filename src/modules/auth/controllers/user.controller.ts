@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiConsumes,
   ApiOperation,
   ApiQuery,
@@ -31,6 +32,7 @@ export class UserController {
   }
 
   @Get('me/sessions')
+  @ApiBearerAuth('jwt')
   @ApiOperation({ summary: 'Get user sessions by ID' })
   @ApiConsumes('application/json')
   @ApiQuery({

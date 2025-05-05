@@ -1,5 +1,10 @@
 import { Body, Controller, Delete, Post } from '@nestjs/common';
-import { ApiConsumes, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { ApiBody } from '@nestjs/swagger';
 import { SignInRequestDto } from '../dtos/auth/sign-in-request.dto';
 import { SignInResponseDto } from '../dtos/auth/sign-in-response.dto';
@@ -27,6 +32,7 @@ export class AuthController {
   }
 
   @Delete('sign-out')
+  @ApiBearerAuth('jwt')
   @ApiOperation({ summary: 'Sign out a user' })
   @ApiConsumes('application/json')
   @ApiResponse({
@@ -50,7 +56,6 @@ export class AuthController {
   })
   @ApiConsumes('application/json')
   async refreshToken(@Body() body: RefreshTokenRequestDto) {
-    console.log(body);
     return this.authService.refreshToken(body);
   }
 }
