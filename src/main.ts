@@ -15,7 +15,6 @@ async function bootstrap() {
     .setTitle('InPro API')
     .setDescription('Here is the API documentation for InPro')
     .setVersion('1.0')
-    .addTag('Auth Service')
     .addServer('http://localhost:3000')
     .addSecurity('jwt', {
       type: 'http',

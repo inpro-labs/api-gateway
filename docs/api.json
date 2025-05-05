@@ -204,12 +204,7 @@
     "version": "1.0",
     "contact": {}
   },
-  "tags": [
-    {
-      "name": "Auth Service",
-      "description": ""
-    }
-  ],
+  "tags": [],
   "servers": [
     {
       "url": "http://localhost:3000"

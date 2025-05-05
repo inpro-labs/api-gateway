@@ -28,11 +28,15 @@ export class AuthService {
   }
 
   async signOut(): Promise<unknown> {
+    const accessToken = (this.request.headers.authorization as string).split(
+      ' ',
+    )[1];
+
     this.logger.log(`sending event: [sign_out]`);
     return (
       await this.authClient.apply<SignOutRequestDto>('sign_out', {
         data: {
-          accessToken: this.request.headers.authorization as string,
+          accessToken,
         },
         metadata: injectHeaders(this.request.headers),
       })
